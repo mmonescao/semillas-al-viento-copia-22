@@ -1,0 +1,65 @@
+import plantas.*
+import parcelas.*
+import INTA.*
+
+test "parcelasTest" {
+
+
+	const parcela1 = new Parcela(ancho = 20, largo = 1, horasDeSol = 10)
+	const parcela2 = new Parcela(ancho = 25, largo = 1, horasDeSol = 7)
+	assert.equals(20, parcela1.superficie())
+	assert.equals(4, parcela1.cantidadMaxDePlantas())
+	
+	const soja1 = new Soja(altura = 1.2, anioDeObtencion = 2010)
+	const soja2 = new Soja(altura = 1.3, anioDeObtencion = 2010)
+	const soja3 = new Soja(altura = 1.4, anioDeObtencion = 2010)
+	const soja4 = new Soja(altura = 1.5, anioDeObtencion = 2010)
+	const soja5 = new Soja(altura = 1.1, anioDeObtencion = 2010)
+	const menta2 = new Menta(altura = 0.3)
+	
+	const peperina = new Peperina(altura = 1)
+	const quinoa1 = new Quinoa(espacioQueOcupa = 0.2, anioDeObtencion = 2010)
+	const sojaT = new SojaTransgenica(altura = 0.9, anioDeObtencion = 2008)
+	
+	parcela1.plantar(soja1)
+	parcela1.plantar(soja2)
+	parcela1.plantar(soja3)
+	parcela1.plantar(soja4)
+	
+	assert.notThat(parcela1.tieneSangreJoven())
+	assert.equals(4,parcela1.cantidadMaxDePlantas())
+	assert.equals(10,parcela1.horasDeSol())
+	assert.throwsException({parcela1.plantar(soja5)})
+	
+	assert.that(menta2.esParcelaIdeal(parcela1))
+	assert.that(peperina.esParcelaIdeal(parcela1))
+	assert.notThat(quinoa1.esParcelaIdeal(parcela1))
+	assert.notThat(sojaT.esParcelaIdeal(parcela1))
+	assert.notThat(soja5.esParcelaIdeal(parcela1))
+	
+	const parcelaEc = new ParcelaEcologica(ancho = 25, largo = 1, horasDeSol = 7)
+	const parcelaInd = new ParcelaIndustrial(ancho = 10, largo = 1, horasDeSol = 7)
+	const menta3 = new Menta(altura = 0.3, anioDeObtencion = 2013)
+	const peperina2 = new Peperina(altura = 1, anioDeObtencion = 2013)
+	
+	
+	parcelaEc.plantar(menta3)
+	
+	parcelaInd.plantar(soja2)
+	
+	assert.that(quinoa1.esFuerte())
+	assert.that(parcelaEc.seAsociaBien(peperina2))
+	assert.that(parcelaInd.seAsociaBien(quinoa1))
+	
+	parcela2.plantar(soja5)
+	parcela2.plantar(menta2)
+	parcela2.plantar(peperina)
+	parcela2.plantar(sojaT)
+	parcela2.plantar(quinoa1)
+	
+	inta.agregarParcela(parcela1)
+	inta.agregarParcela(parcela2)
+	
+	assert.equals(4.5, inta.promedioDePlantas())
+	
+}
